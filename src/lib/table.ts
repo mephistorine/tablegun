@@ -48,9 +48,9 @@ function isUndefined(matchObject: any): matchObject is undefined {
   return typeof matchObject === 'undefined'
 }
 
-function isNull(matchObject: any): matchObject is null {
+/*function isNull(matchObject: any): matchObject is null {
   return matchObject === null
-}
+}*/
 
 export function tableProcess(data: Dictionary[], columns: Map<string, Column>, sortOrder: string[]): any {
   const INDEXES: Set<number> = new Set(data.map((_: Dictionary, index: number) => index))
@@ -83,7 +83,29 @@ export function tableProcess(data: Dictionary[], columns: Map<string, Column>, s
     }
   }
 
-  return Array.from(INDEXES).map((index: number) => takeItemByIndex(index, dataset))
+  const sort = (a: number, b: number, sortOrder: string[], columns: Map<string, Column>, dataset: Record<string, any[]>): number => {
+    const [ current, ...other ] = sortOrder
+
+    const columnSetting: Column | undefined = columns.get(current)
+
+    if (isUndefined(columnSetting)) {
+      return 0
+    }
+
+    const series: any[] = dataset[ current ]
+
+    const sortResult: number = columnSetting.sort(series[ a ], series[ b ])
+
+    if (sortResult === 0) {
+      return sort(a, b, other, columns, dataset)
+    }
+
+    return sortResult
+  }
+
+  const sorted: number[] = Array.from(INDEXES).sort((a: number, b: number) => sort(a, b, sortOrder, columns, dataset))
+
+  return sorted.map((index: number) => takeItemByIndex(index, dataset))
 
   /*const filterIndexes: Set<number> = new Set(data.map((_: Dictionary, index: number) => index))
   const dataset: Record<string, any> = buildDataSet(data, Object.keys(data[ 0 ]))
