@@ -1,11 +1,13 @@
-export interface Column {
+import { Column } from './column/column'
+
+export interface ColumnDepric {
   filters: ((item: any) => boolean)[]
   sort: (a: any, b: any) => number
 }
 
 type Dictionary = { [key in string]: any }
 
-export function buildSeries(takeValue: (data: { [key: string]: any }) => any, data: Dictionary[]): any[] {
+export function buildSeries(takeValue: (data: { [key: string]: any }) => any, data: readonly Dictionary[]): any[] {
   const result: any[] = []
 
   for (const item of data) {
@@ -15,7 +17,7 @@ export function buildSeries(takeValue: (data: { [key: string]: any }) => any, da
   return result
 }
 
-export function takeItemByIndex(index: number, dataset: Record<string, any[]>): Record<string, any> {
+export function buildItemByIndex(index: number, dataset: Record<string, any[]>): Record<string, any> {
   const result: Record<string, any> = {}
 
   for (const columnName in dataset) {
@@ -30,7 +32,7 @@ export function takeItemByIndex(index: number, dataset: Record<string, any[]>): 
   return result
 }
 
-export function buildDataSet(data: Dictionary[], properties: string[]): Record<string, any[]> {
+export function buildDataSet(data: readonly any[], properties: string[]): Record<string, any[]> {
   const result: Record<string, any[]> = {}
 
   for (const property of properties) {
@@ -38,10 +40,6 @@ export function buildDataSet(data: Dictionary[], properties: string[]): Record<s
   }
 
   return result
-}
-
-export function noopSort(): number {
-  return 0
 }
 
 function isUndefined(matchObject: any): matchObject is undefined {
@@ -52,7 +50,7 @@ function isUndefined(matchObject: any): matchObject is undefined {
   return matchObject === null
 }*/
 
-export function tableProcess(data: Dictionary[], columns: Map<string, Column>, sortOrder: string[]): any {
+export function tableProcess(data: Dictionary[], columns: Map<string, ColumnDepric>, sortOrder: string[]): any {
   const INDEXES: Set<number> = new Set(data.map((_: Dictionary, index: number) => index))
   const dataset: Record<string, any[]> = buildDataSet(data, Object.keys(data[ 0 ]))
 
@@ -62,7 +60,7 @@ export function tableProcess(data: Dictionary[], columns: Map<string, Column>, s
         continue
       }
 
-      const columnSetting: Column | undefined = columns.get(columnName)
+      const columnSetting: ColumnDepric | undefined = columns.get(columnName)
 
       if (isUndefined(columnSetting)) {
         continue
@@ -83,10 +81,10 @@ export function tableProcess(data: Dictionary[], columns: Map<string, Column>, s
     }
   }
 
-  const sort = (a: number, b: number, sortOrder: string[], columns: Map<string, Column>, dataset: Record<string, any[]>): number => {
-    const [ current, ...other ] = sortOrder
+  const sort: any = (a: number, b: number, sortOrder: string[], columns: Map<string, ColumnDepric>, dataset: Record<string, any[]>): number => {
+    const [ current, ...other ]: string[] = sortOrder
 
-    const columnSetting: Column | undefined = columns.get(current)
+    const columnSetting: ColumnDepric | undefined = columns.get(current)
 
     if (isUndefined(columnSetting)) {
       return 0
@@ -105,63 +103,51 @@ export function tableProcess(data: Dictionary[], columns: Map<string, Column>, s
 
   const sorted: number[] = Array.from(INDEXES).sort((a: number, b: number) => sort(a, b, sortOrder, columns, dataset))
 
-  return sorted.map((index: number) => takeItemByIndex(index, dataset))
+  return sorted.map((index: number) => buildItemByIndex(index, dataset))
+}
 
-  /*const filterIndexes: Set<number> = new Set(data.map((_: Dictionary, index: number) => index))
-  const dataset: Record<string, any> = buildDataSet(data, Object.keys(data[ 0 ]))
+export class Table<T> {
+  constructor(private columns: Column<unknown>[]) {
+  }
 
-  for (const key in dataset) {
-    const series: any[] = dataset[ key ]
-    const column: Column | undefined = columns.get(key)
+  public calculate(data: readonly T[]): readonly T[] {
+    const properties: string[] = this.columns.map((column: Column<unknown>) => column.name)
+    const dataset: Record<string, unknown[]> = buildDataSet(data, properties)
 
-    if (typeof column !== 'undefined') {
-      let i: number = 0
-      for (const item of series) {
-        if (!filterIndexes.has(i)) {
-          continue
+    const INDEXES: Set<number> = new Set(data.map((_: Dictionary, index: number) => index))
+
+    for (const currentIndex of INDEXES) {
+      for (const column of this.columns) {
+        const series: unknown[] | undefined = dataset[ column.name ]
+
+        if (typeof series === 'undefined') {
+          continue // Add console warn about absence series
+          // throw new Error(`Series with column name="${ column.name }"`)
         }
 
-        const filterResult: boolean | undefined = column.filters?.every((filter: (item: any) => boolean) => filter(item))
-        if (!filterResult) {
-          filterIndexes.delete(i)
+        const item: unknown = series[ currentIndex ]
+
+        if (column.filter(item)) {
+          INDEXES.delete(currentIndex)
         }
-        i++
       }
     }
-  }*/
 
-  // return Array.from(filterIndexes.values()).map((index: number) => data[ index ])
+    return Array
+      .from(INDEXES)
+      .sort((a: number, b: number) => Table.multiColumnSort(a, b, this.columns, dataset))
+      .map((index: number) => buildItemByIndex(index, dataset)) as readonly T[]
+  }
 
-  /*for (const columnName of sortOrder) {
-    const series: any[] = dataset[ columnName ]
-    const column: Column | undefined = columns.get(columnName)
-    if (typeof column !== 'undefined') {
-      const sortFunc: ((a: any, b: any) => number) | null = column.sort
-      if (sortFunc !== null) {
-        series.slice().sort((a: any, b: any) => {
-          const sortResult: number = sortFunc(a, b)
+  private static multiColumnSort(a: number, b: number, columns: Column<unknown>[], dataset: Record<string, unknown[]>): number {
+    const [ currentColumn, ...other ] = columns
+    const series: unknown[] = dataset[ currentColumn.name ]
+    const result: number = currentColumn.compare(series[ a ], series[ b ])
 
-          if (sortResult !== 0) {
-            return sortResult
-          }
-
-
-        })
-      }
+    if (result === 0) {
+      return  Table.multiColumnSort(a, b, other, dataset)
     }
-  }*/
 
-  /*
-  for (const key in dataset) {
-    const series: any[] = dataset[ key ]
-    const column: Column | undefined = columns.get(key)
-
-    if (typeof column !== 'undefined') {
-      const sortFunc: ((a: any, b: any) => number) | null = column.sort
-      if (sortFunc !== null) {
-        const sortedSeries: any[] = series.slice().sort((a: any, b: any) => sortFunc(a, b))
-      }
-    }
-  }*/
-
+    return result
+  }
 }

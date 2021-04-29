@@ -156,8 +156,7 @@
       "arrow-parameter",
       "property-declaration",
       "variable-declaration",
-      "member-variable-declaration",
-      "array-destructuring"
+      "member-variable-declaration"
     ],
     "typedef-whitespace": false,
     "use-default-type-parameter": false,

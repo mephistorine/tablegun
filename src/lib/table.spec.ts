@@ -1,4 +1,4 @@
-import { Column, tableProcess } from './table'
+import { ColumnDepric, tableProcess } from './table'
 
 const data: any[] = [
   {
@@ -42,7 +42,7 @@ const data: any[] = [
 describe(`buildDataset`, () => {
 
   test(`test`, () => {
-    const columns: Map<string, Column> = new Map<string, Column>()
+    const columns: Map<string, ColumnDepric> = new Map<string, ColumnDepric>()
       /*.set('rank', {
         sort: noopSort,
         filters: [
