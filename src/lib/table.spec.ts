@@ -1,4 +1,6 @@
-import { ColumnDepric, tableProcess } from './table'
+import { Column } from './column/column'
+import { ColumnSortDirection } from './column/column-sort-direction'
+import { Table } from './table'
 
 const data: any[] = [
   {
@@ -42,49 +44,17 @@ const data: any[] = [
 describe(`buildDataset`, () => {
 
   test(`test`, () => {
-    const columns: Map<string, ColumnDepric> = new Map<string, ColumnDepric>()
-      /*.set('rank', {
-        sort: noopSort,
-        filters: [
-          (item: any) => {
-            if (item === null) {
-              return false
-            }
-
-            return item === 'Junior'
-          }
-        ]
+    const columns: Column<unknown>[] = [
+      Column.build('name', ColumnSortDirection.ascending, [
+        { filter: (item: unknown) => item === 'Sam' || item === 'Alexandr' }
+      ]),
+      Column.build('age', ColumnSortDirection.descending, [], {
+        compare: (a: number, b: number) => a - b
       })
-      .set('jobPosition', {
-        sort: noopSort,
-        filters: [
-          (item: any) => {
-            if (item === null) {
-              return false
-            }
+    ]
 
-            return item === 'Frontend developer'
-          }
-        ]
-      })*/
-      .set('age', {
-        sort: (a: number, b: number) => {
-          return a - b
-        },
-        filters: []
-      })
-      .set('rank', {
-        // @ts-ignore
-        sort: (a: string, b: string) => {
-          if (a === 'Junior') {
-            return -1
-          }
-
-          return 0
-        },
-        filters: []
-      })
-    const result: any = tableProcess(data, columns, [ 'age', 'rank' ])
-    expect(result).toBeTruthy()
+    const table: Table<unknown> = new Table(columns)
+    const expected = table.calculate(data)
+    expect(expected.map((item: any) => item.name)).toEqual([ 'Sam', 'Alexandr' ])
   })
 })

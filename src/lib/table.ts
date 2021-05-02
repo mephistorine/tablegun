@@ -144,7 +144,7 @@ export class Table<T> {
     const series: unknown[] = dataset[ currentColumn.name ]
     const result: number = currentColumn.compare(series[ a ], series[ b ])
 
-    if (result === 0) {
+    if (result === 0 && other.length > 0) {
       return  Table.multiColumnSort(a, b, other, dataset)
     }
 
