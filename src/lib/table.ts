@@ -127,7 +127,7 @@ export class Table<T> {
 
         const item: unknown = series[ currentIndex ]
 
-        if (column.filter(item)) {
+        if (!column.filter(item)) {
           INDEXES.delete(currentIndex)
         }
       }
