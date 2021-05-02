@@ -1,12 +1,25 @@
+import { ColumnSortDirection } from './column-sort-direction'
 import { FilterRule } from './filter'
 import { NOOP_SORT, SortRule } from './sort'
 
-export abstract class Column<T> {
+export class Column<T> {
   private filterRules: Set<FilterRule<T>> = new Set()
   private sortRule: SortRule<T> | null = null
 
   constructor(public readonly name: string,
-              public direction: 1 | -1) {
+              public direction: ColumnSortDirection = 1) {
+  }
+
+  public static build<R>(
+    name: string,
+    direction: ColumnSortDirection = 1,
+    filters: FilterRule<unknown>[] = [],
+    sort: SortRule<unknown> | null = null
+  ): Column<R> {
+    const column: Column<R> = new Column(name, direction)
+    filters.forEach((filterRule: FilterRule<unknown>) => column.addFilter(filterRule))
+    column.setSort(sort)
+    return column
   }
 
   public compare(a: T, b: T): number {
