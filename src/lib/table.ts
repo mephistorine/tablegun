@@ -142,7 +142,7 @@ export class Table<T> {
   private static multiColumnSort(a: number, b: number, columns: Column<unknown>[], dataset: Record<string, unknown[]>): number {
     const [ currentColumn, ...other ] = columns
     const series: unknown[] = dataset[ currentColumn.name ]
-    const result: number = currentColumn.compare(series[ a ], series[ b ])
+    const result: number = currentColumn.hasSort ? currentColumn.compare(series[ a ], series[ b ]) : 0
 
     if (result === 0 && other.length > 0) {
       return  Table.multiColumnSort(a, b, other, dataset)
