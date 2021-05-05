@@ -7,6 +7,11 @@ export function buildItemByIndex(index: number, dataset: Record<string, any[]>):
     }
 
     const series: any[] = dataset[ columnName ]
+
+    if (!Array.isArray(series)) {
+      throw new Error(`Series width columnName="${ columnName }" must be an array`)
+    }
+
     result[ columnName ] = series[ index ]
   }
 
