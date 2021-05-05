@@ -1,120 +1,36 @@
-import { Column } from './column/column'
-
-export interface ColumnDepric {
-  filters: ((item: any) => boolean)[]
-  sort: (a: any, b: any) => number
-}
-
-type Dictionary = { [key in string]: any }
-
-export function buildSeries(takeValue: (data: { [key: string]: any }) => any, data: readonly Dictionary[]): any[] {
-  const result: any[] = []
-
-  for (const item of data) {
-    result.push(takeValue(item))
-  }
-
-  return result
-}
-
-export function buildItemByIndex(index: number, dataset: Record<string, any[]>): Record<string, any> {
-  const result: Record<string, any> = {}
-
-  for (const columnName in dataset) {
-    if (!dataset.hasOwnProperty(columnName)) {
-      continue
-    }
-
-    const series: any[] = dataset[ columnName ]
-    result[ columnName ] = series[ index ]
-  }
-
-  return result
-}
-
-export function buildDataSet(data: readonly any[], properties: string[]): Record<string, any[]> {
-  const result: Record<string, any[]> = {}
-
-  for (const property of properties) {
-    result[ property ] = buildSeries((item: Dictionary) => item[ property ], data)
-  }
-
-  return result
-}
-
-function isUndefined(matchObject: any): matchObject is undefined {
-  return typeof matchObject === 'undefined'
-}
-
-/*function isNull(matchObject: any): matchObject is null {
-  return matchObject === null
-}*/
-
-export function tableProcess(data: Dictionary[], columns: Map<string, ColumnDepric>, sortOrder: string[]): any {
-  const INDEXES: Set<number> = new Set(data.map((_: Dictionary, index: number) => index))
-  const dataset: Record<string, any[]> = buildDataSet(data, Object.keys(data[ 0 ]))
-
-  for (const index of INDEXES) {
-    for (const columnName in dataset) {
-      if (!dataset.hasOwnProperty(columnName)) {
-        continue
-      }
-
-      const columnSetting: ColumnDepric | undefined = columns.get(columnName)
-
-      if (isUndefined(columnSetting)) {
-        continue
-      }
-
-      if (columnSetting.filters.length <= 0) {
-        continue
-      }
-
-      const series: any[] = dataset[ columnName ]
-      const item: any = series[ index ]
-
-      const isItemBeFiltered: boolean | undefined = columnSetting.filters.every((filter: (item: any) => boolean) => filter(item))
-
-      if (!isItemBeFiltered) {
-        INDEXES.delete(index)
-      }
-    }
-  }
-
-  const sort: any = (a: number, b: number, sortOrder: string[], columns: Map<string, ColumnDepric>, dataset: Record<string, any[]>): number => {
-    const [ current, ...other ]: string[] = sortOrder
-
-    const columnSetting: ColumnDepric | undefined = columns.get(current)
-
-    if (isUndefined(columnSetting)) {
-      return 0
-    }
-
-    const series: any[] = dataset[ current ]
-
-    const sortResult: number = columnSetting.sort(series[ a ], series[ b ])
-
-    if (sortResult === 0) {
-      return sort(a, b, other, columns, dataset)
-    }
-
-    return sortResult
-  }
-
-  const sorted: number[] = Array.from(INDEXES).sort((a: number, b: number) => sort(a, b, sortOrder, columns, dataset))
-
-  return sorted.map((index: number) => buildItemByIndex(index, dataset))
-}
+import { Column } from './column'
+import { buildDataSet, buildItemByIndex } from './helpers'
 
 export class Table<T> {
-  constructor(private columns: Column<unknown>[]) {
+  constructor(
+    /**
+     * @todo Add possibility for add/remove columns
+     */
+    private readonly columns: Column[] = []
+  ) {
+  }
+
+  private static multiColumnSort(a: number, b: number, columns: Column[], dataset: Record<string, unknown[]>): number {
+    const [ currentColumn, ...other ] = columns
+    const series: unknown[] = dataset[ currentColumn.name ]
+    const result: number = currentColumn.hasSort ? currentColumn.compare(series[ a ], series[ b ]) : 0
+
+    if (result === 0 && other.length > 0) {
+      return Table.multiColumnSort(a, b, other, dataset)
+    }
+
+    return result
   }
 
   public calculate(data: readonly T[]): readonly T[] {
-    const properties: string[] = this.columns.map((column: Column<unknown>) => column.name)
+    /**
+     * We assume that all data is consistent,
+     * so we take the list of columns from the first element in the list
+     */
+    const properties: string[] = Object.keys(data[ 0 ])
     const dataset: Record<string, unknown[]> = buildDataSet(data, properties)
 
-    const INDEXES: Set<number> = new Set(data.map((_: Dictionary, index: number) => index))
+    const INDEXES: Set<number> = new Set(data.map((_: Record<string, any>, index: number) => index))
 
     for (const currentIndex of INDEXES) {
       for (const column of this.columns) {
@@ -137,17 +53,5 @@ export class Table<T> {
       .from(INDEXES)
       .sort((a: number, b: number) => Table.multiColumnSort(a, b, this.columns, dataset))
       .map((index: number) => buildItemByIndex(index, dataset)) as readonly T[]
-  }
-
-  private static multiColumnSort(a: number, b: number, columns: Column<unknown>[], dataset: Record<string, unknown[]>): number {
-    const [ currentColumn, ...other ] = columns
-    const series: unknown[] = dataset[ currentColumn.name ]
-    const result: number = currentColumn.hasSort ? currentColumn.compare(series[ a ], series[ b ]) : 0
-
-    if (result === 0 && other.length > 0) {
-      return  Table.multiColumnSort(a, b, other, dataset)
-    }
-
-    return result
   }
 }

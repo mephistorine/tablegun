@@ -3,7 +3,7 @@ import { FilterRule } from './filter'
 import { SortRule } from './sort'
 import { TransformRule } from './transform'
 
-export class Column<T> {
+export class Column<T = unknown> {
   private filterRules: Set<FilterRule<T>> = new Set()
   private transformRule: TransformRule<T> | null = null
   private sortRule: SortRule<T> | null = null
@@ -26,9 +26,9 @@ export class Column<T> {
 
   public static build<R>(
     name: string,
-    direction: ColumnSortDirection = 1,
     filters: FilterRule<unknown>[] = [],
-    sort: SortRule<unknown> | null = null
+    sort: SortRule<unknown> | null = null,
+    direction: ColumnSortDirection = ColumnSortDirection.default
   ): Column<R> {
     const column: Column<R> = new Column(name, direction)
     filters.forEach((filterRule: FilterRule<unknown>) => column.addFilter(filterRule))

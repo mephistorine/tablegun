@@ -1,4 +1,4 @@
 export enum ColumnSortDirection {
-  ascending = 1,
-  descending = -1
+  default = 1,
+  invert = -1
 }
