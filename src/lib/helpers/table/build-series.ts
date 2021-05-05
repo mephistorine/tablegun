@@ -1,4 +1,4 @@
-export function buildSeries(takeValue: (data: { [key: string]: any }) => any, data: readonly Record<string, any>[]): any[] {
+export function buildSeries(takeValue: (data: Record<string, any>) => any, data: readonly Record<string, any>[]): any[] {
   const result: any[] = []
 
   for (const item of data) {
