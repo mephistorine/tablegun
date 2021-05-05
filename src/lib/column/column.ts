@@ -1,11 +1,9 @@
 import { ColumnSortDirection } from './column-sort-direction'
 import { FilterRule } from './filter'
 import { SortRule } from './sort'
-import { TransformRule } from './transform'
 
 export class Column<T = unknown> {
   private filterRules: Set<FilterRule<T>> = new Set()
-  private transformRule: TransformRule<T> | null = null
   private sortRule: SortRule<T> | null = null
 
   public get hasSort(): boolean {
@@ -14,10 +12,6 @@ export class Column<T = unknown> {
 
   public get hasFilters(): boolean {
     return this.filterRules.size > 0
-  }
-
-  public get hasTransform(): boolean {
-    return this.transformRule !== null
   }
 
   constructor(public readonly name: string,
@@ -52,20 +46,12 @@ export class Column<T = unknown> {
     return Array.from(this.filterRules).every((rule: FilterRule<T>) => rule.filter(item))
   }
 
-  public transform(item: T): any {
-    if (this.transformRule === null) {
-      throw new Error(`Column width name="${ this.name }" has no transform rule`)
-    }
-
-    return this.transformRule.transform(item)
-  }
-
   public setSort(sortRule: SortRule<T> | null): void {
     this.sortRule = sortRule
   }
 
-  public setTransform(transformRule: TransformRule<T>): void {
-    this.transformRule = transformRule
+  public takeSort(): SortRule<T> | null {
+    return this.sortRule
   }
 
   public addFilter(filterRule: FilterRule<T>): void {
@@ -76,11 +62,12 @@ export class Column<T = unknown> {
     this.filterRules.delete(filterRule)
   }
 
-  public setDirection(direction: 1 | -1): void {
+  public takeAllFilters(): readonly FilterRule<T>[] {
+    return Array.from(this.filterRules)
+  }
+
+  public setDirection(direction: ColumnSortDirection): void {
     this.direction = direction
   }
 
-  /*  public buildSeries<R>(dataset: R[]): T[] {
-
-    }*/
 }
