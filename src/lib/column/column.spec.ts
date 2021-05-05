@@ -1,4 +1,4 @@
-import { data } from '../../../test-data/repositories-lite.json'
+import { data } from '../../test-data/repositories-lite.json'
 import { buildSeries } from '../helpers'
 
 import { Column } from './column'
