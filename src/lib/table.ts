@@ -1,27 +1,23 @@
 import { Column } from './column'
 import { buildDataSet, buildItemByIndex } from './helpers'
+import { multiColumnSortRecursively } from './helpers/table/multi-column-sort-recursively'
 
 export class Table<T> {
   constructor(
     /**
-     * @todo Add possibility for add/remove columns
+     * Column list
+     *
+     * @private
      */
     private readonly columns: Column[] = []
   ) {
   }
 
-  private static multiColumnSort(a: number, b: number, columns: Column[], dataset: Record<string, unknown[]>): number {
-    const [ currentColumn, ...other ] = columns
-    const series: unknown[] = dataset[ currentColumn.name ]
-    const result: number = currentColumn.hasSort ? currentColumn.compare(series[ a ], series[ b ]) : 0
-
-    if (result === 0 && other.length > 0) {
-      return Table.multiColumnSort(a, b, other, dataset)
-    }
-
-    return result
-  }
-
+  /**
+   * Processes data applying all filtering and sorting rules
+   *
+   * @param data Array of processing items. Each item must be object
+   */
   public calculate(data: readonly T[]): readonly T[] {
     /**
      * We assume that all data is consistent,
@@ -51,7 +47,7 @@ export class Table<T> {
 
     return Array
       .from(INDEXES)
-      .sort((a: number, b: number) => Table.multiColumnSort(a, b, this.columns, dataset))
+      .sort((a: number, b: number) => multiColumnSortRecursively(a, b, this.columns, dataset))
       .map((index: number) => buildItemByIndex(index, dataset)) as readonly T[]
   }
 }

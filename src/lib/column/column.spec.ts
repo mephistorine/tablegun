@@ -19,7 +19,7 @@ describe(`Column`, () => {
       column.setSort(new NumberSortRule())
 
       const series: number[] = buildSeries((repo: any) => repo.forks_count, data)
-      expect(series.slice().sort((a: number, b: number) => column.compare(a, b))).toEqual([
+      expect(series.slice().sort((a: number, b: number) => column.sort(a, b))).toEqual([
         114,
         139,
         171,
@@ -38,7 +38,7 @@ describe(`Column`, () => {
       column.setSort(new NumberSortRule())
 
       const series: number[] = buildSeries((repo: any) => repo.forks_count, data)
-      expect(series.slice().sort((a: number, b: number) => column.compare(a, b))).toEqual([
+      expect(series.slice().sort((a: number, b: number) => column.sort(a, b))).toEqual([
         33759,
         28881,
         19101,
@@ -58,7 +58,7 @@ describe(`Column`, () => {
       column.setDirection(ColumnSortDirection.invert)
 
       const series: number[] = buildSeries((repo: any) => repo.forks_count, data)
-      expect(series.slice().sort((a: number, b: number) => column.compare(a, b))).toEqual([
+      expect(series.slice().sort((a: number, b: number) => column.sort(a, b))).toEqual([
         33759,
         28881,
         19101,
@@ -76,7 +76,7 @@ describe(`Column`, () => {
       const column: Column<number> = new Column('forksCount')
       const series: number[] = buildSeries((repo: any) => repo.forks_count, data)
 
-      expect(() => series.slice().sort((a: number, b: number) => column.compare(a, b))).toThrowError(`Column width name="forksCount" has no sort rule`)
+      expect(() => series.slice().sort((a: number, b: number) => column.sort(a, b))).toThrowError(`Column width name="forksCount" has no sort rule`)
     })
 
     test(`hasSort should return true when sortRule exist`, () => {
