@@ -2,7 +2,7 @@ name: Docs deploy
 on:
   push:
     branches:
-      - feat-docs-deploy
+      - stable
 jobs:
   build:
     runs-on: ubuntu-16.04
