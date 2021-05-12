@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "incremental": true,
+    "tsBuildInfoFile": "./ts-incremental-build-info",
     "target": "es2017",
     "outDir": "build/main",
     "rootDir": "src",
