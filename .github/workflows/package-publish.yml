@@ -1,3 +1,4 @@
+name: Package publish
 on:
   release:
     types:
@@ -18,17 +19,5 @@ jobs:
           echo "node: $( node -v )"
           echo "npm: $( npm -v )"
           echo "npx: $( npx -v )"
-      - name: Prepare Git
-        run: |
-          git config --global user.name "Github Actions bot"
-          git config --global user.email "mephistorine+githubActionBot@gmail.com"
-      - name: Install dependencies
-        run: npm ci
-      - name: Lint
-        run: npm run lint
-      - name: Tests
-        run: npm run test
-      - name: Build
-        run: npm run build
       - name: Publish
         run: npm publish
