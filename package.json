@@ -25,7 +25,12 @@
   },
   "keywords": [
     "table",
-    "matrix"
+    "matrix",
+    "javascript",
+    "typescript",
+    "browser",
+    "sort",
+    "filter"
   ],
   "author": {
     "name": "Sam Bulatov",
