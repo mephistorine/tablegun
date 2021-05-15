@@ -1,7 +1,6 @@
 name: PR build
 on:
   pull_request:
-    branches: [ dev ]
     types: [ opened, reopened, synchronize ]
 jobs:
   build:
@@ -27,3 +26,5 @@ jobs:
         run: npm run build
       - name: Danger JS
         uses: danger/danger-js@9.1.8
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

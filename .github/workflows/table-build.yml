@@ -1,4 +1,4 @@
-name: Docs deploy
+name: Stable build
 on:
   push:
     branches:
@@ -19,11 +19,22 @@ jobs:
           echo "node: $( node -v )"
           echo "npm: $( npm -v )"
           echo "npx: $( npx -v )"
-      - name: Install dependencies
-        run: npm ci
 
-      - name: Build docs
-        run: npm run build:docs
+      - name: Lint
+        run: npm run lint
+
+      - name: Tests
+        run: npm run test
+
+      - name: Build
+        run: npm run build
+
+      - name: Deploy test coverage report to Codecov
+        uses: codecov/codecov-action@v1
+        with:
+          fail_ci_if_error: true
+          token: ${{ secrets.CODECOV_TOKEN }}
+          directory: ./coverage
 
       - name: Deploy docs to Vercel
         run: npx vercel deploy --prod --token ${VERCEL_TOKEN} ./docs
@@ -31,4 +42,3 @@ jobs:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-
