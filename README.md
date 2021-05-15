@@ -5,6 +5,7 @@ tablegun
 ![npm](https://img.shields.io/npm/dw/tablegun)
 ![GitHub Release Date](https://img.shields.io/github/release-date/mephistorine/tablegun)
 ![GitHub (Pre-)Release Date](https://img.shields.io/github/release-date-pre/mephistorine/tablegun?label=pre-release%20date)
+![Codecov branch](https://img.shields.io/codecov/c/github/mephistorine/tablegun/stable)
 ===
 
 > ⛔️ NOTE: Production not ready!
@@ -12,7 +13,7 @@ tablegun
 ### Install
 
 ```bash
-$ npm install tablegun
+npm install tablegun
 ```
 
 ### Roadmap
@@ -22,4 +23,4 @@ $ npm install tablegun
 
 ## Credits
 
-- <div>Icons made by <a href="https://www.freepik.com" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>
+- Icons made by [Freepik](https://www.freepik.com) from [flaticon.com](https://www.flaticon.com/)
