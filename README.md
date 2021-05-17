@@ -11,7 +11,7 @@
 
 <!-- ![GitHub Release Date](https://img.shields.io/github/release-date/mephistorine/tablegun) -->
 
-**Fast** and **simple** table-like data procession like sorting, filtering, transforming and count total value.
+**Fast** and **zero dependencies** table-like data procession like sorting, filtering, transforming and count total value.
 
 ## Install
 
@@ -61,7 +61,3 @@ Check the [CONTRIBUTING](CONTRIBUTING.md) file
 - Transforms
 - Total count
 - Columns preset for primitives
-
-## Credits
-
-- Icons made by [Freepik](https://www.freepik.com) from [flaticon.com](https://www.flaticon.com/)
