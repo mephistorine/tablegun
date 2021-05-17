@@ -1,25 +1,63 @@
-tablegun
-&middot;
-![GitHub tag (latest by date)](https://img.shields.io/github/v/tag/mephistorine/tablegun)
-![Lincense](https://img.shields.io/npm/l/tablegun)
-![npm](https://img.shields.io/npm/dw/tablegun)
-![GitHub Release Date](https://img.shields.io/github/release-date/mephistorine/tablegun)
-![GitHub (Pre-)Release Date](https://img.shields.io/github/release-date-pre/mephistorine/tablegun?label=pre-release%20date)
-===
+<p align="center"><img src="tablegun.svg" alt="Tablegun logo" width="200"></p>
 
-> ⛔️ NOTE: Production not ready!
+> ⛔️ NOTE: NOT READY FOR PRODUCTION!
 
-### Install
+# tablegun
+
+[![Latest release version](https://img.shields.io/npm/v/tablegun.svg?logo=npm&logoColor=fff&label=NPM+package&color=limegreen)](https://www.npmjs.com/package/tablegun)
+![NPM downloads](https://img.shields.io/npm/dw/tablegun.svg?logo=npm)
+![GitHub (Pre-)Release Date](https://img.shields.io/github/release-date-pre/mephistorine/tablegun?label=Pre%20release)
+![Coverage](https://img.shields.io/codecov/c/github/mephistorine/tablegun/stable.svg?logo=jest)
+
+<!-- ![GitHub Release Date](https://img.shields.io/github/release-date/mephistorine/tablegun) -->
+
+**Fast** and **zero dependencies** table-like data procession like sorting, filtering, transforming and count total value.
+
+## Install
 
 ```bash
-$ npm install tablegun
+npm install tablegun
 ```
 
-### Roadmap
+## Usage
+
+### Basic
+
+Should filter users over 19 years old
+
+```typescript
+// Create some data
+const data: User[] = [
+  { name: 'John', age: 14 },
+  { name: 'Jane', age: 17 },
+  { name: 'Bob', age: 19 },
+  { name: 'Paul', age: 20 },
+  { name: 'Kate', age: 30 },
+]
+
+// Define columns
+const columns: Column[] = [
+  // Define column for 'age'
+  Column.build('age', [ { filter: (age: number) => age > 19 } ])
+]
+
+// Create table with defined columns
+const table: Table<any> = new Table(columns)
+
+// Calculate result
+console.log(table.calculate(data).map((repo: any) => repo.name))
+// > [
+//   'Paul',
+//   'Kate',
+// ]
+```
+
+## Contributing
+
+Check the [CONTRIBUTING](CONTRIBUTING.md) file
+
+## Roadmap
 
 - Transforms
 - Total count
-
-## Credits
-
-- <div>Icons made by <a href="https://www.freepik.com" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>
+- Columns preset for primitives
