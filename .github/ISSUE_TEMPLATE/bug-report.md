@@ -1,6 +1,6 @@
 ---
-name: Bug report
-about: Report a bug in Tablegun
+name: "⚠️ Bug report"
+about: Report a bug
 title: ''
 labels: bug
 assignees: ''
@@ -16,28 +16,13 @@ Existing issues often contain information about workarounds, resolution, or prog
 
 -->
 
-
 # Bug Report
-
-### Affected Package
-<!-- Can you pin-point one or more @angular/* packages as the source of the bug? -->
-<!-- edit: --> The issue is caused by package @angular/....
-
-
-### Is this a regression?
-
-<!-- Did this behavior use to work in the previous version? -->
-<!-- edit: --> Yes, the previous version in which this bug was not present was: ....
-
 
 ### Description
 <!-- edit: --> A clear and concise description of the problem...
 
-
 ## Minimal Reproduction
-<!--
-Please create and share minimal reproduction of the issue starting with this template: https://stackblitz.com/fork/angular-ivy
--->
+<!-- Please create and share minimal reproduction of the issue starting with this template -->
 <!-- edit: --> https://stackblitz.com/...
 
 <!--
@@ -47,7 +32,7 @@ Share the link to the repo below along with step-by-step instructions to reprodu
 
 Issues that don't have enough info and can't be reproduced will be closed.
 
-You can read more about issue submission guidelines here: https://github.com/angular/angular/blob/master/CONTRIBUTING.md#submit-issue
+You can read more about issue submission guidelines here: https://github.com/mephistorine/tablegun/blob/stable/CONTRIBUTING.md#issue
 -->
 
 ## Exception or Error
@@ -56,13 +41,11 @@ You can read more about issue submission guidelines here: https://github.com/ang
 
 </code></pre>
 
-
 ## Your Environment
 
-**Angular Version:**
+**Tablegun Version:**
 <pre><code>
-<!-- run `ng version` and paste output below -->
-
+<!-- see in package.json and paste version below -->
 </code></pre>
 
 **Anything else relevant?**
