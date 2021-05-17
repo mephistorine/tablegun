@@ -1,4 +1,4 @@
-<p align="center"><img src="tablegun.svg" lat="Tablegun logo" width="200"></p>
+<p align="center"><img src="tablegun.svg" alt="Tablegun logo" width="200"></p>
 
 > ⛔️ NOTE: NOT READY FOR PRODUCTION!
 
