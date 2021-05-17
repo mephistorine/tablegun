@@ -61,8 +61,8 @@ Must be one of the following:
 
 | Type | Description |
 |---|---|
-| build | Changes that affect the build system or external dependencies (example scopes: gulp, broccoli, npm) |
-| ci | Changes to our CI configuration files and scripts (example scopes: Circle, BrowserStack, SauceLabs) |
+| build | Changes that affect the build system or external dependencies |
+| ci | Changes to our CI configuration files and scripts |
 | docs | Documentation only changes |
 | feat | A new feature |
 | fix | A new feature |
@@ -86,7 +86,7 @@ Explain the motivation for the change in the commit message body. This commit me
 
 ##### Commit message footer
 
-The footer can contain information about breaking changes and is also the place to reference GitHub issues, Jira tickets, and other PRs that this commit closes or is related to.
+The footer can contain information about breaking changes and is also the place to reference GitHub issues, and other PRs that this commit closes or is related to.
 
 ```text
 BREAKING CHANGE: <breaking change summary>
@@ -113,8 +113,6 @@ Instruction for version release:
     git push && git push --tags 
     ```
 4. Merge `dev` branch into `stable`
-
-After PR reviewed and approved PR branch merged in `dev` branch
 
 ## Submitting
 
