@@ -1,3 +1,7 @@
+<p align="center"><img src="tablegun.svg" lat="Tablegun logo" width="200"></p>
+
+> ⛔️ NOTE: NOT READY FOR PRODUCTION!
+
 # tablegun
 
 [![Latest release version](https://img.shields.io/npm/v/tablegun.svg?logo=npm&logoColor=fff&label=NPM+package&color=limegreen)](https://www.npmjs.com/package/tablegun)
@@ -8,12 +12,6 @@
 <!-- ![GitHub Release Date](https://img.shields.io/github/release-date/mephistorine/tablegun) -->
 
 **Fast** and **simple** table-like data procession like sorting, filtering, transforming and count total value.
-
----
-
-> ⛔️ NOTE: NOT READY FOR PRODUCTION!
-
----
 
 ## Install
 
